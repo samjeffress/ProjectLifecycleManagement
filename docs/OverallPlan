@@ -1,0 +1,10 @@
+Project
+	-> Project Streams & Goals
+		-> User Stories
+			-> Requirements / Code
+
+Project can have many goals and streams (many to many)
+A user story should reside within a project stream and can be linked to one or more goals.
+A user story makes up requirements for a coded implementation.
+
+This is only intended to take care of the software creation side of the project, there may be streams that do not require any software - they can be noted, but no stories / code will be linked to them (up for grabs).
