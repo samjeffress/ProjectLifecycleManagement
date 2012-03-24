@@ -1,0 +1,16 @@
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+[Pp]ackages*/
+*.suo
+*.user
+
+_ReSharper*
+*.resharper
+*.dotCover
+[Tt]est[Rr]esult*
+
+#database getup
+*.mdf
+*.ldf
+*.pdb
