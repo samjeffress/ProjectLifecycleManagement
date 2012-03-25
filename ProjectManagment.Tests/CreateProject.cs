@@ -1,7 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
-using Raven.Client;
+using ProjectManagement;
 using Raven.Client.Embedded;
 using Raven.Client.Linq;
 
@@ -60,51 +59,6 @@ namespace ProjectManagment.Tests
             const string projectName = "project";
             var exceptionMessage = string.Format("Cannot create new project '{0}' - {1} is an inactive user.", projectName, user.Username);
             Assert.That(() => pm.CreateProject(projectName, user), Throws.ArgumentException.With.Message.EqualTo(exceptionMessage));
-        }
-    }
-
-    public class UserAccount
-    {
-        public string Username { get; set; }
-
-        public UserStatus Status { get; set; }
-    }
-
-    public enum UserStatus
-    {
-        Active,
-        Inactive
-    }
-
-    public interface IProjectManager
-    {
-        Project CreateProject(string projectName, UserAccount user);
-    }
-
-    public class Project
-    {
-        public string Owner { get; set; }
-
-        public string Name { get; set; }
-    }
-
-    public class ProjectManager : IProjectManager
-    {
-        public IDocumentStore DocumentStore { get; set; }
-
-        public Project CreateProject(string projectName, UserAccount user)
-        {
-            var session = DocumentStore.OpenSession();
-            var inactiveUserAccount = session.Query<UserAccount>().Where(u => u.Username == user.Username && u.Status == UserStatus.Inactive).Count();
-            if (inactiveUserAccount > 0)
-                throw new ArgumentException(string.Format("Cannot create new project '{0}' - {1} is an inactive user.", projectName, user.Username));
-            var existingProjects = session.Query<Project>().Where(p => p.Name == projectName).Count();
-            if (existingProjects > 0)
-                throw new ArgumentException(string.Format("Cannot create new project '{0}' - this project name is already in use.", projectName));
-            var project = new Project { Name = projectName, Owner = user.Username };
-            session.Store(project);
-            session.SaveChanges();
-            return project;
         }
     }
 }
