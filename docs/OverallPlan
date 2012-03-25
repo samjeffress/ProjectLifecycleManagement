@@ -8,3 +8,9 @@ A user story should reside within a project stream and can be linked to one or m
 A user story makes up requirements for a coded implementation.
 
 This is only intended to take care of the software creation side of the project, there may be streams that do not require any software - they can be noted, but no stories / code will be linked to them (up for grabs).
+
+
+Project can be created by anyone - who then becomes the owner.
+Project owner can add other users to the project.
+All events in the system will be captured in an 'event store', this should effectively allow for us to export the project to another piece of software that does a similar thing.
+
