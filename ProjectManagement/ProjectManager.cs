@@ -13,7 +13,7 @@ namespace ProjectManagement
 
         void AddUserToProject(string projectName, string userToAdd, string actingUser);
 
-        void AddGoalToProject(string projectName, Goal goal, string username)
+        void AddGoalToProject(string projectName, Goal goal, string username);
     }
 
     public class ProjectManager : IProjectManager
