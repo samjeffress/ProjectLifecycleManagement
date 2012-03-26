@@ -12,6 +12,8 @@ namespace ProjectManagement
         void AddProjectStream(string activeProjectNameName, ProjectStream newProjectStream, string username);
 
         void AddUserToProject(string projectName, string userToAdd, string actingUser);
+
+        void AddGoalToProject(string projectName, Goal goal, string username)
     }
 
     public class ProjectManager : IProjectManager
