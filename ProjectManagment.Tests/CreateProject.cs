@@ -17,7 +17,7 @@ namespace ProjectManagment.Tests
             _embeddedDocStore = new EmbeddableDocumentStore { RunInMemory = true };
             _embeddedDocStore.Initialize();
             var documentSession = _embeddedDocStore.OpenSession();
-            documentSession.Store(new Project { Name = "existing" });
+            documentSession.Store(new Project("existing", ""));
             documentSession.Store(new UserAccount { Username = "inactive", Status = UserStatus.Inactive });
             documentSession.SaveChanges();
         }
@@ -32,13 +32,6 @@ namespace ProjectManagment.Tests
             Assert.That(createdProject.Owner, Is.EqualTo(user.Username));
             Assert.That(createdProject.Name, Is.EqualTo(projectName));
             AssertProjectIsCreated(projectName, user.Username);
-        }
-
-        private void AssertProjectIsCreated(string projectName, string username)
-        {
-            var session = _embeddedDocStore.OpenSession();
-            var projectCount = session.Query<Project>().Where(p => p.Name == projectName && p.Owner == username).Count();
-            Assert.That(projectCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -59,6 +52,16 @@ namespace ProjectManagment.Tests
             const string projectName = "project";
             var exceptionMessage = string.Format("Cannot create new project '{0}' - {1} is an inactive user.", projectName, user.Username);
             Assert.That(() => pm.CreateProject(projectName, user), Throws.ArgumentException.With.Message.EqualTo(exceptionMessage));
+        }
+
+        private void AssertProjectIsCreated(string projectName, string username)
+        {
+            var session = _embeddedDocStore.OpenSession();
+            var projectCount = session.Query<Project>().Where(p => p.Name == projectName && p.Owner == username).Count();
+            Assert.That(projectCount, Is.EqualTo(1));
+            var project = session.Query<Project>().Where(p => p.Name == projectName && p.Owner == username).First();
+            Assert.That(project.Users.Count(), Is.EqualTo(1));
+            Assert.That(project.Users[0], Is.EqualTo(username));
         }
     }
 }
