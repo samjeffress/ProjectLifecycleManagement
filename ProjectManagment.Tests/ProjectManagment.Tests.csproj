@@ -97,8 +97,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CreateProject.cs" />
-    <Compile Include="CreateProjectStream.cs" />
+    <Compile Include="AddUsersToProjectTestFixture.cs" />
+    <Compile Include="CreateProjectTestFixture.cs" />
+    <Compile Include="CreateProjectGoalsTestFixture.cs" />
+    <Compile Include="CreateProjectStreamTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

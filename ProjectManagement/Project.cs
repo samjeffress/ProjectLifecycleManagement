@@ -10,9 +10,10 @@ namespace ProjectManagement
             Owner = owner;
             Name = projectName;
             CreatedDate = DateTime.Now;
-            Status = ProjectStatus.Active;
+            Status = ProjectManagement.Status.Active;
             Users = new List<string> { owner };
             ProjectStreams = new List<ProjectStream>();
+            Goals = new List<Goal>();
         }
 
         public Project()
@@ -21,7 +22,7 @@ namespace ProjectManagement
             ProjectStreams = new List<ProjectStream>();
         }
 
-        public ProjectStatus Status { get; set; }
+        public Status Status { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -32,30 +33,14 @@ namespace ProjectManagement
         public List<string> Users { get; set; }
 
         public List<ProjectStream> ProjectStreams { get; set; }
+
+        public List<Goal> Goals { get; set; }
     }
 
-    public enum ProjectStatus
+    public enum Status
     {
         Active,
         Cancelled,
         Complete
-    }
-
-    public class ProjectStream
-    {
-        public ProjectStream(string name, string description)
-        {
-            Name = name;
-            Description = description;
-            CreatedDate = DateTime.Now;
-        }
-
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
-        public DateTime CreatedDate { get; set; }
-
-        public string CreatedBy { get; set; }
     }
 }

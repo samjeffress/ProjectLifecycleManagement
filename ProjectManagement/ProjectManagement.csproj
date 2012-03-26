@@ -64,8 +64,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Goal.cs" />
+    <Compile Include="Objective.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="ProjectManager.cs" />
+    <Compile Include="ProjectStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserAccount.cs" />
   </ItemGroup>
