@@ -10,6 +10,8 @@ namespace ProjectManagement
         Project CreateProject(string projectName, UserAccount user);
 
         void AddProjectStream(Project activeProject, ProjectStream newProjectStream, string username);
+
+        void AddUserToProject(string projectName, string userToAdd, string actingUser);
     }
 
     public class ProjectManager : IProjectManager
@@ -40,7 +42,26 @@ namespace ProjectManagement
             if (!project.Users.Contains(username))
                 throw new ArgumentException(string.Format("User {0} is currently not active in Project {1}.", username, project.Name));
             project.ProjectStreams.Add(new ProjectStream(newProjectStream.Name, newProjectStream.Description) { CreatedBy = username });
-            session.Store(project);
+            //session.Store(project);
+            session.SaveChanges();
+        }
+
+        public void AddUserToProject(string projectName, string userToAdd, string actingUser)
+        {
+            var session = DocumentStore.OpenSession();
+            var project = session.Query<Project>().Where(p => p.Name == projectName).FirstOrDefault();
+            if (project == null)
+                throw new ArgumentException(string.Format("Could not find Project {0}.", projectName));
+            if (!project.Users.Contains(actingUser))
+                throw new ArgumentException(string.Format("{0} is not authorised to add new users to Project {1}.", actingUser, projectName));
+            var userAccount = session.Query<UserAccount>().Where(u => u.Username == userToAdd).FirstOrDefault();
+            if (userAccount == null)
+                throw new ArgumentException(string.Format("Could not find UserAccount {0}.", userToAdd));
+            if (userAccount.Status != UserStatus.Active)
+                throw new ArgumentException(string.Format("{0} is not currently an active user, please reactivate and try again", userToAdd));
+            if (!project.Users.Contains(userToAdd))
+                project.Users.Add(userToAdd);
+
             session.SaveChanges();
         }
     }
