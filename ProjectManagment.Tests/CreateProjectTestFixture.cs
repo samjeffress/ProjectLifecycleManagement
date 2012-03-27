@@ -19,6 +19,7 @@ namespace ProjectManagment.Tests
             var documentSession = _embeddedDocStore.OpenSession();
             documentSession.Store(new Project("existing", ""));
             documentSession.Store(new UserAccount { Username = "inactive", Status = UserStatus.Inactive });
+            documentSession.Store(new UserAccount { Username = "user", Status = UserStatus.Active});
             documentSession.SaveChanges();
         }
 
@@ -27,11 +28,11 @@ namespace ProjectManagment.Tests
         {
             var pm = new ProjectManager { Session = _embeddedDocStore.OpenSession() };
             const string projectName = "newProject";
-            var user = new UserAccount();
+            const string user = "user";
             var createdProject = pm.CreateProject(projectName, user);
-            Assert.That(createdProject.Owner, Is.EqualTo(user.Username));
+            Assert.That(createdProject.Owner, Is.EqualTo(user));
             Assert.That(createdProject.Name, Is.EqualTo(projectName));
-            AssertProjectIsCreated(projectName, user.Username);
+            AssertProjectIsCreated(projectName, user);
         }
 
         [Test]
@@ -39,7 +40,7 @@ namespace ProjectManagment.Tests
         {
             var pm = new ProjectManager { Session = _embeddedDocStore.OpenSession() };
             const string projectName = "existing";
-            var user = new UserAccount();
+            const string user = "user";
             var exceptionMessage = string.Format("Cannot create new project '{0}' - this project name is already in use.", projectName);
             Assert.That(() => pm.CreateProject(projectName, user), Throws.ArgumentException.With.Message.EqualTo(exceptionMessage));
         }
@@ -48,9 +49,9 @@ namespace ProjectManagment.Tests
         public void CreateNewProjectInactiveUser()
         {
             var pm = new ProjectManager { Session = _embeddedDocStore.OpenSession() };
-            var user = new UserAccount { Username = "inactive" };
+            const string user = "inactive";
             const string projectName = "project";
-            var exceptionMessage = string.Format("Cannot create new project '{0}' - {1} is an inactive user.", projectName, user.Username);
+            var exceptionMessage = string.Format("Cannot create new project '{0}' - {1} is an inactive user.", projectName, user);
             Assert.That(() => pm.CreateProject(projectName, user), Throws.ArgumentException.With.Message.EqualTo(exceptionMessage));
         }
 

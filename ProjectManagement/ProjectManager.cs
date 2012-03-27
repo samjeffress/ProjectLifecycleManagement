@@ -7,7 +7,7 @@ namespace ProjectManagement
 {
     public interface IProjectManager
     {
-        Project CreateProject(string projectName, UserAccount user);
+        Project CreateProject(string projectName, string user);
 
         void AddProjectStream(string activeProjectNameName, ProjectStream newProjectStream, string username);
 
@@ -20,15 +20,15 @@ namespace ProjectManagement
     {
         public IDocumentSession Session { get; set; }
 
-        public Project CreateProject(string projectName, UserAccount user)
+        public Project CreateProject(string projectName, string user)
         {
-            var inactiveUserAccount = Session.Query<UserAccount>().Where(u => u.Username == user.Username && u.Status == UserStatus.Inactive).Count();
-            if (inactiveUserAccount > 0)
-                throw new ArgumentException(string.Format("Cannot create new project '{0}' - {1} is an inactive user.", projectName, user.Username));
+            var inactiveUserAccount = Session.Query<UserAccount>().Where(u => u.Username == user && u.Status == UserStatus.Active).Count();
+            if (inactiveUserAccount != 1)
+                throw new ArgumentException(string.Format("Cannot create new project '{0}' - {1} is an inactive user.", projectName, user));
             var existingProjects = Session.Query<Project>().Where(p => p.Name == projectName).Count();
             if (existingProjects > 0)
                 throw new ArgumentException(string.Format("Cannot create new project '{0}' - this project name is already in use.", projectName));
-            var project = new Project(projectName, user.Username);
+            var project = new Project(projectName, user);
             Session.Store(project);
             Session.SaveChanges();
             return project;

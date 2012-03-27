@@ -1,44 +1,41 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 
 namespace ProjectManagement.Web.Controllers
 {
     public class ProjectController : RavenController
     {
-        //
-        // GET: /Project/
-
         public ActionResult Index()
         {
             return View();
         }
 
-        //
-        // GET: /Project/Details/5
-
-        public ActionResult Details(int id)
+        public ActionResult Details(string id)
         {
-            return View();
+            var project = RavenSession.Load<Project>(id);
+            if (project == null)
+                throw new ArgumentException("Can't find project " + id);
+            return View("Details", project);
         }
-
-        //
-        // GET: /Project/Create
 
         public ActionResult Create()
         {
             return View();
         } 
 
-        //
-        // POST: /Project/Create
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(FormCollection collection)
         {
             try
             {
-                // TODO: Add insert logic here
+                var project = new Project();
+                UpdateModel(project);
+                var pm = new ProjectManager { Session = RavenSession };
+                var createdProject = pm.CreateProject(project.Name, User.Identity.Name);
 
-                return RedirectToAction("Index");
+                RavenSession.Store(project);
+                return RedirectToAction("Details", new { id = project.Name });
             }
             catch
             {

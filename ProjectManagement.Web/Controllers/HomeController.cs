@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
+using Raven.Client.Linq;
 
 namespace ProjectManagement.Web.Controllers
 {
@@ -7,8 +9,9 @@ namespace ProjectManagement.Web.Controllers
         public ActionResult Index()
         {
             ViewBag.Message = "Welcome to ASP.NET MVC!";
+            var activeProjects = RavenSession.Query<Project>().Where(p => p.Status == Status.Active).ToList();
 
-            return View();
+            return View("Index", activeProjects);
         }
 
         public ActionResult About()
