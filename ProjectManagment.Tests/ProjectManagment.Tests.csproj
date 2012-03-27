@@ -101,6 +101,7 @@
     <Compile Include="CreateProjectTestFixture.cs" />
     <Compile Include="CreateProjectGoalsTestFixture.cs" />
     <Compile Include="CreateProjectStreamTestFixture.cs" />
+    <Compile Include="CreateUserAccountTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

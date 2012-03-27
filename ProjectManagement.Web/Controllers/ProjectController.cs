@@ -34,7 +34,6 @@ namespace ProjectManagement.Web.Controllers
                 var pm = new ProjectManager { Session = RavenSession };
                 var createdProject = pm.CreateProject(project.Name, User.Identity.Name);
 
-                RavenSession.Store(project);
                 return RedirectToAction("Details", new { id = project.Name });
             }
             catch

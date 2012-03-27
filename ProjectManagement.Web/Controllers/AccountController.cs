@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using System.Web.Security;
 using ProjectManagement.Web.Models;
 
 namespace ProjectManagement.Web.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : RavenController
     {
 
         //
@@ -77,6 +73,7 @@ namespace ProjectManagement.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                var projectManager = new ProjectManager { Session = RavenSession };
                 // Attempt to register the user
                 MembershipCreateStatus createStatus;
                 Membership.CreateUser(model.UserName, model.Password, model.Email, null, null, true, null, out createStatus);
@@ -84,6 +81,7 @@ namespace ProjectManagement.Web.Controllers
                 if (createStatus == MembershipCreateStatus.Success)
                 {
                     FormsAuthentication.SetAuthCookie(model.UserName, false /* createPersistentCookie */);
+                    projectManager.CreateUserAccount(model.UserName);
                     return RedirectToAction("Index", "Home");
                 }
                 else

@@ -14,6 +14,8 @@ namespace ProjectManagement
         void AddUserToProject(string projectName, string userToAdd, string actingUser);
 
         void AddGoalToProject(string projectName, Goal goal, string username);
+
+        void CreateUserAccount(string userName);
     }
 
     public class ProjectManager : IProjectManager
@@ -29,7 +31,7 @@ namespace ProjectManagement
             if (existingProjects > 0)
                 throw new ArgumentException(string.Format("Cannot create new project '{0}' - this project name is already in use.", projectName));
             var project = new Project(projectName, user);
-            Session.Store(project);
+            Session.Store(project, projectName);
             Session.SaveChanges();
             return project;
         }
@@ -78,6 +80,15 @@ namespace ProjectManagement
                 throw new ArgumentException(string.Format("Could not find Project {0}.", projectName));
             if (!project.Users.Contains(actingUser))
                 throw new ArgumentException(string.Format("{0} is not authorised to edit Project {1}.", actingUser, projectName));
+        }
+
+        public void CreateUserAccount(string userName)
+        {
+            var existingUserCount = Session.Query<UserAccount>().Where(u => u.Username == userName).Count();
+            if (existingUserCount > 0)
+                throw new ArgumentException(string.Format("User {0} already exists.", userName));
+            Session.Store(new UserAccount { Username = userName, Status = UserStatus.Active});
+            Session.SaveChanges();
         }
     }
 }

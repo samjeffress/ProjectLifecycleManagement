@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Routing;
 using ProjectManagement.Web.Controllers;
+using ProjectManagement.Web.Helpers;
 using Raven.Abstractions.Data;
 using Raven.Client;
 using Raven.Client.Document;
@@ -37,6 +38,7 @@ namespace ProjectManagement.Web
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new LogonAuthorize());
         }
 
         public static void RegisterRoutes(RouteCollection routes)
