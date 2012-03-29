@@ -5,6 +5,8 @@ namespace ProjectManagement.Web.Controllers
 {
     public class ProjectController : RavenController
     {
+        public IProjectManager ProjectManager { get; set; }
+
         public ActionResult Index()
         {
             return View();
@@ -12,10 +14,18 @@ namespace ProjectManagement.Web.Controllers
 
         public ActionResult Details(string id)
         {
-            var project = RavenSession.Load<Project>(id);
-            if (project == null)
-                throw new ArgumentException("Can't find project " + id);
-            return View("Details", project);
+            try
+            {
+                var project = RavenSession.Load<Project>(id);
+                if (project == null)
+                    throw new ArgumentException("Cannot find project " + id);
+                return View("Details", project);
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = e.Message;
+                return View("Error");
+            }
         }
 
         public ActionResult Create()
@@ -31,23 +41,29 @@ namespace ProjectManagement.Web.Controllers
             {
                 var project = new Project();
                 UpdateModel(project);
-                var pm = new ProjectManager { Session = RavenSession };
-                var createdProject = pm.CreateProject(project.Name, User.Identity.Name);
-
+                ProjectManager.CreateProject(project.Name, User.Identity.Name);
                 return RedirectToAction("Details", new { id = project.Name });
             }
-            catch
+            catch(Exception e)
             {
-                return View();
+                
+                // TODO: Push exception in here rather than redirect to an error page
+                return View("Create");
             }
         }
-        
-        //
-        // GET: /Project/Edit/5
  
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
-            return View();
+            try
+            {
+                var project = RavenSession.Load<Project>(id);
+                return View("Edit", project);
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = e.Message;
+                return View("Error");
+            }
         }
 
         //

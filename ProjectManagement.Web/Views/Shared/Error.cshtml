@@ -7,3 +7,10 @@
 <h2>
     Sorry, an error occurred while processing your request.
 </h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+<p>
+    @ViewBag.ErrorMessage
+</p>
+}
